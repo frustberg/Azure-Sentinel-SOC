@@ -1,0 +1,24 @@
+-- KQL Examples for Sentinel
+
+-- 1) Multiple Failed Logins (Brute force)
+SecurityEvent
+| where EventID == 4625
+| summarize FailedAttempts = count() by Account, bin(TimeGenerated, 1h)
+| where FailedAttempts > 5
+
+-- 2) New User Account Created
+SecurityEvent
+| where EventID == 4720
+| project TimeGenerated, Account, Computer
+
+-- 3) Suspicious Command Execution (Sysmon example)
+Sysmon
+| where EventID == 1
+| where ProcessCommandLine contains "mimikatz" or Image contains "psexec"
+
+-- 4) Threat Intelligence IP Match (requires TI connector)
+SecurityEvent
+| extend RemoteIp = coalesce(RemoteIpAddress, tostring(parse_json(AdditionalFields).IpAddress), "")
+| where RemoteIp != ""
+| join kind=inner (ThreatIntelligenceIndicator) on $left.RemoteIp == $right.NetworkIP
+| project TimeGenerated, Account, RemoteIp, Description

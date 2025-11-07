@@ -1,0 +1,22 @@
+#!/bin/bash
+# Replace placeholders before running
+
+# Login
+az login
+
+# Create resource group
+az group create --name SOC-Lab --location eastus
+
+# Create Log Analytics workspace
+az monitor log-analytics workspace create --resource-group SOC-Lab --workspace-name SOC-Logs
+
+# Create a small VM (Ubuntu)
+az vm create --resource-group SOC-Lab --name soc-vm --image UbuntuLTS --admin-username azureuser --generate-ssh-keys --size Standard_B1s
+
+# Get workspace ID & key
+# Replace <WORKSPACE_NAME> and <RESOURCE_GROUP> as needed
+WORKSPACE_ID=$(az monitor log-analytics workspace show --resource-group SOC-Lab --workspace-name SOC-Logs --query customerId -o tsv)
+echo "Workspace ID: $WORKSPACE_ID"
+
+# Install agent extension (Linux example) - replace <PRIMARY_KEY>
+az vm extension set --publisher Microsoft.Azure.Monitor --name OmsAgentForLinux --resource-group SOC-Lab --vm-name soc-vm --settings "{\"workspaceId\":\"$WORKSPACE_ID\"}" --protected-settings "{\"workspaceKey\":\"<PRIMARY_KEY>\"}"
