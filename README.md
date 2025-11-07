@@ -14,21 +14,11 @@ Build a fully functional cloud-based Security Operations Center (SOC) using Micr
 
 ---
 
-## Short project summary
-Build a cloud-native SOC on Azure using Sentinel. Connect Azure VMs to Log Analytics, create analytics rules with KQL, integrate threat intelligence, build Logic App playbooks for automated responses, and visualize incidents via Workbooks.
-
----
-
 ## How to run (quick)
 1. Create an Azure subscription (free / student if available).  
 2. Follow `guide.md` step-by-step (Portal or CLI).  
 3. Use `kql_examples.txt` to add analytics rules in Sentinel.  
 4. Import `logicapp_playbook.json` into Logic Apps if you want automated responses.  
 5. Test by generating failed logins or other benign events on the onboarded VM.
-
----
-
-## License
-MIT — see `LICENSE`.
 
 ---
